@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="30dp"
+    android:id="@+id/custom_dialog">
+
+
+    <TextView
+        android:id="@+id/custom_dialog_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="25sp"
+        android:layout_margin="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:text="Title"/>
+
+
+    <ImageView
+        android:id="@+id/custom_dialog_img"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_below="@+id/custom_dialog_title"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/car" />
+
+    <EditText
+        android:id="@+id/cus_edit_text_title"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@+id/custom_dialog_img"
+        android:layout_margin="10dp"
+        android:hint="Hello"
+        />
+
+    <EditText
+        android:id="@+id/cus_edit_text_description"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@+id/cus_edit_text_title"
+       android:layout_margin="10dp"
+        android:hint="Description"
+        />
+
+    <Button
+        android:id="@+id/btn_cus_dia_add_update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cus_edit_text_description"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="10dp"
+        android:text="Add/Updat"/>
+
+    <Button
+        android:id="@+id/btn_cus_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cus_edit_text_description"
+        android:layout_margin="10dp"
+        android:text="Cancel"/>
+
+
+</RelativeLayout>

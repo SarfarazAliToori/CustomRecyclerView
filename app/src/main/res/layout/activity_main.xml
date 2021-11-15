@@ -25,4 +25,15 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/search_view" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_my_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/add_circle"
+        android:layout_alignBottom="@id/recycler_view"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="25dp"
+        android:tooltipText="Add Data From Here"
+        />
+
 </RelativeLayout>

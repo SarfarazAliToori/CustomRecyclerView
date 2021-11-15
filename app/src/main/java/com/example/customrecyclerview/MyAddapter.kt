@@ -1,16 +1,20 @@
 package com.example.customrecyclerview
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.custom_dialog_add_update.view.*
 import kotlinx.android.synthetic.main.items_view.view.*
 
-class MyAddapter(var myDataClass : List<MyDataClass>, val context: Context)
+class MyAddapter(var myDataClass : ArrayList<MyDataClass>, val context: Context)
     : RecyclerView.Adapter<MyAddapter.MyViewHolder>(), Filterable {
 
     var myDataClassForFiltering = listOf<MyDataClass>()
@@ -19,19 +23,12 @@ class MyAddapter(var myDataClass : List<MyDataClass>, val context: Context)
         myDataClassForFiltering = myDataClass
     }
 
-    ///////////////////////
-//    companion object {
-//        var mySerialNUm : String? = ""
-//    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.items_view,parent,false)
         return MyViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        /////////////////////
-       // mySerialNUm = holder.itemId.toString()
 
         val currentPossition = myDataClass[position]
 
@@ -49,7 +46,41 @@ class MyAddapter(var myDataClass : List<MyDataClass>, val context: Context)
             intent.putExtra("descriptionKey", currentPossition.description)
             context.startActivity(intent)
         })
+        // Long Press Action
+        holder.myLayout.setOnLongClickListener {
 
+            val customDialog = View.inflate(context, R.layout.custom_dialog_add_update, null)
+            val mAlertDialog = AlertDialog.Builder(context)
+            mAlertDialog.setView(customDialog).show()
+            customDialog.btn_cus_dia_add_update.text = "Update"
+            customDialog.btn_cus_cancel.text = "Delete"
+
+            // Required Extension function for string to Editable text
+            fun String.toEditable() : Editable = Editable.Factory.getInstance().newEditable(this)
+
+            customDialog.cus_edit_text_title.text = myDataClass[position].title.toEditable()
+            customDialog.cus_edit_text_description.text = myDataClass[position].description.toEditable()
+
+            // Updata Button
+            customDialog.btn_cus_dia_add_update.setOnClickListener {
+
+                val mTitle = customDialog.cus_edit_text_title.text.toString().trim()
+                val mDescription = customDialog.cus_edit_text_description.text.toString().trim()
+
+                myDataClass.set(position, MyDataClass(R.drawable.car, mTitle, mDescription))
+                notifyItemChanged(position)
+
+            }
+
+            // Cancel Button
+            customDialog.btn_cus_cancel.setOnClickListener {
+                myDataClass.removeAt(position)
+                notifyItemChanged(position)
+                Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show()
+            }
+
+            return@setOnLongClickListener true
+        }
     }
 
     override fun getItemCount(): Int {
