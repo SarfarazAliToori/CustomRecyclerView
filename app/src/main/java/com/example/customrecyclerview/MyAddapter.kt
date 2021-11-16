@@ -69,16 +69,13 @@ class MyAddapter(var myDataClass : ArrayList<MyDataClass>, val context: Context)
 
                 myDataClass.set(position, MyDataClass(R.drawable.car, mTitle, mDescription))
                 notifyItemChanged(position)
-
             }
-
             // Cancel Button
             customDialog.btn_cus_cancel.setOnClickListener {
                 myDataClass.removeAt(position)
                 notifyItemChanged(position)
                 Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show()
             }
-
             return@setOnLongClickListener true
         }
     }

@@ -32,4 +32,34 @@
         android:padding="20dp"
         />
 
+    <Button
+        android:id="@+id/btn_start_record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_detail"
+        android:layout_marginTop="150dp"
+        android:layout_marginLeft="30dp"
+        android:text="Start Record" />
+
+    <Button
+        android:id="@+id/btn_stop_record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_detail"
+        android:layout_marginTop="150dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="30dp"
+        android:text="Stop Record"/>
+
+    <Button
+        android:id="@+id/btn_Play_record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_detail"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="224dp"
+        android:layout_marginEnd="139dp"
+        android:layout_marginRight="30dp"
+        android:text="Play Record" />
+
 </RelativeLayout>
