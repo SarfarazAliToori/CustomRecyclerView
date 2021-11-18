@@ -1,16 +1,23 @@
 package com.example.customrecyclerview
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.media.MediaRecorder
+import android.net.wifi.WifiManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Base64
 import android.util.Log
 import android.view.View
+import android.widget.Switch
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -22,7 +29,7 @@ import java.io.IOException
 private var path: String? = null
 private var mRecorder: MediaRecorder? = null
 private var state: Boolean = false
-private const val REQUEST_CODE = 42
+private const val REQUEST_CODE = 110
 
 class ItemsDetailScreen : AppCompatActivity(), View.OnClickListener {
 
@@ -47,6 +54,7 @@ class ItemsDetailScreen : AppCompatActivity(), View.OnClickListener {
         btn_stop_record.setOnClickListener(this)
         btn_Play_record.setOnClickListener(this)
         btn_camera.setOnClickListener(this)
+        btn_image_Encode_decode.setOnClickListener(this)
     }
 
     override fun onClick(p0: View?) {
@@ -55,6 +63,7 @@ class ItemsDetailScreen : AppCompatActivity(), View.OnClickListener {
             R.id.btn_stop_record -> stopRecording()
             R.id.btn_Play_record -> playRecording()
             R.id.btn_camera -> openCamera()
+            R.id.btn_image_Encode_decode -> imageEncodeDecode()
         }
     }
 
@@ -126,10 +135,10 @@ class ItemsDetailScreen : AppCompatActivity(), View.OnClickListener {
     }
 
     fun openCamera() {
-        val picIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
-        if (picIntent.resolveActivity(this.packageManager) != null) {
-            startActivityForResult(picIntent, REQUEST_CODE)
+        if (cameraIntent.resolveActivity(this.packageManager) != null) {
+            startActivityForResult(cameraIntent, REQUEST_CODE)
         } else {
             Toast.makeText(applicationContext, "Unable to open Camera", Toast.LENGTH_SHORT).show()
         }
@@ -139,20 +148,71 @@ class ItemsDetailScreen : AppCompatActivity(), View.OnClickListener {
         //super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            // receive pic from Intent.
             val pic = data?.extras?.get("data") as Bitmap
 
-            val bstream = ByteArrayOutputStream()
+            val byteArrayOutputStream = ByteArrayOutputStream()
+           // val bitmap : Bitmap = BitmapFactory.decodeResource(resources, R.drawable.pf_image)
+            pic.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
+            var imageByte : ByteArray = byteArrayOutputStream.toByteArray()
+            var myImageStrig : String = Base64.encodeToString(imageByte, Base64.DEFAULT)
+            tv_detail.text = myImageStrig
 
-            // pic.compress(Bitmap.CompressFormat.JPEG,50,bstream)
-            // val imgg = bstream.toByteArray()
-            //val strimgImg = Base64.getEncoder(imgg,Base64.DEAFULT)
+            imageByte = Base64.decode(myImageStrig, Base64.DEFAULT)
+            val decodeImage : Bitmap = BitmapFactory.decodeByteArray(imageByte,0, imageByte.size)
 
-            img_view1.setImageBitmap(pic)
+            img_view1.setImageBitmap(decodeImage)
+
+
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
+
+    fun imageEncodeDecode() {
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        val bitmap : Bitmap = BitmapFactory.decodeResource(resources, R.drawable.pf_image)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
+        var imageByte : ByteArray = byteArrayOutputStream.toByteArray()
+        var myImageStrig : String = Base64.encodeToString(imageByte, Base64.DEFAULT)
+        tv_detail.text = myImageStrig
+
+        imageByte = Base64.decode(myImageStrig, Base64.DEFAULT)
+        val decodeImage : Bitmap = BitmapFactory.decodeByteArray(imageByte,0, imageByte.size)
+        img_view1.setImageBitmap(decodeImage)
+
+        val mySingleton = MySingleton.get()
+        println("My singleton : $mySingleton")
+        Log.i("TAG", mySingleton.toString())
+    }
+
+    // wifi status
+    private val wifiStateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            when (intent.getIntExtra(
+                WifiManager.EXTRA_WIFI_STATE,
+                WifiManager.WIFI_STATE_UNKNOWN)) {
+                WifiManager.WIFI_STATE_ENABLED -> {
+                    Toast.makeText(this@ItemsDetailScreen, "Wifi is On", Toast.LENGTH_LONG).show()
+                }
+                WifiManager.WIFI_STATE_DISABLED -> {
+                    Toast.makeText(this@ItemsDetailScreen, "Wifi is Off", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val intentFilter = IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION)
+        registerReceiver(wifiStateReceiver, intentFilter)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unregisterReceiver(wifiStateReceiver)
+    }
 
 }
 

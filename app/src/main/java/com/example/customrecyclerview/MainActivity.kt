@@ -1,14 +1,15 @@
 package com.example.customrecyclerview
 
-import android.content.DialogInterface
-import android.content.SharedPreferences
+import android.content.*
 import android.graphics.drawable.Drawable
+import android.net.wifi.WifiManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.SearchView
+import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,22 +31,6 @@ class MainActivity : AppCompatActivity() {
 //    var myArrayList = arrayListOf(
 //        MyDataClass(R.drawable.local_cafe, "This is Cup Title", "This is my Cup Description Bro How are you. I am good And How are Your, Bro this is dummy text for product Description"),
 //        MyDataClass(R.drawable.bike, "This is Bike Title", "This is my Bike Description Bro How are you. I am good And How are Your, Bro this is dummy text for product Description"),
-//        MyDataClass(R.drawable.ic_baseline_local_printshop_24, "This is Printer Title", "This is my Printer Description Bro How are you. I am good And How are Your, Bro this is dummy text for product Description"),
-//        MyDataClass(R.drawable.laptop_mac, "This is Mac Title", "This is my Mac Description Bro How are you. I am good And How are Your, Bro this is dummy text for product Description"),
-//        MyDataClass(R.drawable.local_bar, "This is Local Bar Title", "This is my Local Bar Description Bro How are you. I am good And How are Your, Bro this is dummy text for product Description"),
-//        MyDataClass(R.drawable.baseball, "This is BaseBall Title", "This is my BaseBall Description Bro How are you. I am good And How are Your, Bro this is dummy text for product Description"),
-//        MyDataClass(R.drawable.phone_android, "This is Android Phone Title", "This is my Android Phone Description Bro How are you. I am good And How are Your, Bro this is dummy text for product Description"),
-//        MyDataClass(R.drawable.live_tv, "This is Screen Title", "This is my Screen Description Bro How are you. I am good And How are Your, Bro this is dummy text for product Description"),
-//        MyDataClass(R.drawable.local_cafe, "This is Cafe Title", "This is my Cafe Description Bro How are you. I am good And How are Your, Bro this is dummy text for product Description"),
-//        MyDataClass(R.drawable.bike, "This is Bike Title", "This is my Bike Description Bro How are you. I am good And How are Your, Bro this is dummy text for product Description"),
-//        MyDataClass(R.drawable.ic_baseline_local_printshop_24, "This is Printer Title", "This is my Car Description Bro How are you. I am good And How are Your, Bro this is dummy text for product Description"),
-//        MyDataClass(R.drawable.laptop_mac, "This is Mac Title", "This is my Mac Description Bro How are you. I am good And How are Your, Bro this is dummy text for product Description"),
-//        MyDataClass(R.drawable.car, "This is Car Title", "This is my Car Description Bro How are you. I am good And How are Your, Bro this is dummy text for product Description"),
-//        MyDataClass(R.drawable.camera, "This is Camera Title", "This is my Camera Description Bro How are you. I am good And How are Your, Bro this is dummy text for product Description"),
-//        MyDataClass(R.drawable.local_bar, "This is Local Bar Title", "This is my Local Bar Description Bro How are you. I am good And How are Your, Bro this is dummy text for product Description"),
-//        MyDataClass(R.drawable.baseball, "This is BaseBall Title", "This is my BaseBall Description Bro How are you. I am good And How are Your, Bro this is dummy text for product Description"),
-//        MyDataClass(R.drawable.phone_android, "This is Android Phone Title", "This is my Android Phone Description Bro How are you. I am good And How are Your, Bro this is dummy text for product Description"),
-//
 //        // MyDataClass(R.drawable.bike, R.string.title.toString(), R.string.title2.toString())
 //    )
 
@@ -55,10 +40,32 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         title = "All Products"
+        // All Functions are Call in functionCall() function
+        functionsCall()
+    }
 
+    fun functionsCall() {
         myFilter()
         addProductData()
+        //firstTimeLoadData()
+        // Signle implementation
+        singleTask()
+    }
 
+
+    fun singleTask() {
+        var singletonArry = arrayListOf<MyDataClass>()
+        singletonArry = MySingleton.mySingletonArryList
+        singletonArry.removeAt(2)
+        singletonArry.add(MyDataClass(R.drawable.phone_android, "Phone", "Phone Details"))
+
+        recycler_view.layoutManager = LinearLayoutManager(this)
+        myAddapter = MyAddapter(singletonArry, this)
+        recycler_view.adapter = myAddapter
+    }
+
+    // data saving and loading ... in, from sharePreferences
+    fun firstTimeLoadData() {
         val sharedPreferences1 = getSharedPreferences("MyFile", MODE_PRIVATE)
         if (!sharedPreferences1.getBoolean("FIRST_RUN", false)) {
             // Once run Code : from line no 63 to line no 81 Run Only Once when app is installed.
